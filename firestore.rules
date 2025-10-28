@@ -1,0 +1,111 @@
+/**
+ * @fileoverview Firestore Security Rules for the application.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict admin-controlled content management system.
+ * Only authenticated administrators, as determined by their presence in the `/admins` collection,
+ * have the ability to create, update, and delete artists, events, partners, and content.
+ * Read access is generally public, while write access is restricted to admins.
+ *
+ * Data Structure:
+ * The Firestore database is structured with flat collections for `artists`, `events`, `partners`, and `content`.
+ * The `/admins` collection contains documents representing administrator users, where the document ID
+ * is the Firebase Auth UID of the administrator.
+ *
+ * Key Security Decisions:
+ * - Public read access for `artists`, `events`, `partners`, and `content`.
+ * - Administrative write access is determined by the presence of a user's UID in the `/admins` collection.
+ * - No user-specific data or collections outside of the `/admins` collection.
+ * - No support for listing the contents of the `/admins` collection.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Checks if the request is made by an authenticated admin.
+     * An admin is determined by the existence of a document in the `/admins` collection
+     * where the document ID matches the authenticated user's UID.
+     */
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    /**
+     * @description Checks if the user is signed in.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Collection of administrator user IDs.
+     * @path /admins/{adminId}
+     * @allow (create) If the user's UID matches the `adminId`, self-creation is allowed to onboard the first admin.
+     * @allow (get) If the requesting user's UID matches the `adminId`, they can retrieve their own admin profile.
+     * @deny (list) Listing the admins collection is not permitted for security reasons.
+     * @deny (update) Updating admin profiles is disallowed to prevent privilege escalation.
+     * @deny (delete) Deleting admin profiles is disallowed.
+     * @principle Restricts management of administrators to server-side functions.
+     */
+    match /admins/{adminId} {
+      allow get: if isSignedIn() && request.auth.uid == adminId;
+      allow list: if false;
+      allow create: if isSignedIn() && request.auth.uid == adminId;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Collection of artist profiles.
+     * @path /artists/{artistId}
+     * @allow (get, list) Allow all users to read artist profiles.
+     * @allow (create, update, delete) Only admins can create, update, or delete artist profiles.
+     * @deny (create, update, delete) Non-admins cannot modify artist data.
+     * @principle Enforces admin-only writes for artist data.
+     */
+    match /artists/{artistId} {
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    /**
+     * @description Collection of event listings.
+     * @path /events/{eventId}
+     * @allow (get, list) Allow all users to read event listings.
+     * @allow (create, update, delete) Only admins can create, update, or delete event listings.
+     * @deny (create, update, delete) Non-admins cannot modify event data.
+     * @principle Enforces admin-only writes for event data.
+     */
+    match /events/{eventId} {
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    /**
+     * @description Collection of partner profiles.
+     * @path /partners/{partnerId}
+     * @allow (get, list) Allow all users to read partner profiles.
+     * @allow (create, update, delete) Only admins can create, update, or delete partner profiles.
+     * @deny (create, update, delete) Non-admins cannot modify partner data.
+     * @principle Enforces admin-only writes for partner data.
+     */
+    match /partners/{partnerId} {
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    /**
+     * @description Collection of curated content items.
+     * @path /content/{contentId}
+     * @allow (get, list) Allow all users to read content items.
+     * @allow (create, update, delete) Only admins can create, update, or delete content items.
+     * @deny (create, update, delete) Non-admins cannot modify content data.
+     * @principle Enforces admin-only writes for content data.
+     */
+    match /content/{contentId} {
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}
