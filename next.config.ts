@@ -23,12 +23,25 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https',
+        protocol: 'https' ,
         hostname: 'picsum.photos',
         port: '',
         pathname: '/**',
       },
     ],
+  },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'none'; base-uri 'self'; connect-src 'self' https://*.googleapis.com wss://*.firebaseio.com; frame-src https://*.firebaseapp.com; ",
+          },
+        ],
+      },
+    ];
   },
 };
 
