@@ -1,3 +1,76 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "artist-1",
+      "description": "Portrait of a female artist with vibrant colors",
+      "imageUrl": "https://images.unsplash.com/photo-1592621385612-4d7129426394?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2MTU5OTgzN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "artist-2",
+      "description": "Male DJ performing at a console",
+      "imageUrl": "https://images.unsplash.com/photo-1580843634936-47eaa02462e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkaiUyMGNvbnNvbGV8ZW58MHx8fHwxNzYxNjIwNDc1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dj console"
+    },
+    {
+      "id": "artist-3",
+      "description": "Actor performing on a dimly lit stage",
+      "imageUrl": "https://images.unsplash.com/photo-1630435037688-74c9ec61ffa1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhY3RvciUyMHN0YWdlfGVufDB8fHx8MTc2MTY1NDE4Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "actor stage"
+    },
+    {
+      "id": "artist-4",
+      "description": "Singer with a microphone in a studio",
+      "imageUrl": "https://images.unsplash.com/photo-1552595458-3df9ba563207?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzaW5nZXIlMjBtaWNyb3Bob25lfGVufDB8fHx8MTc2MTY0ODIyNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "singer microphone"
+    },
+    {
+      "id": "artist-5",
+      "description": "Dancer in mid-motion with expressive pose",
+      "imageUrl": "https://images.unsplash.com/photo-1716583731307-310991905310?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkYW5jZXIlMjBtb3Rpb258ZW58MHx8fHwxNzYxNjU0MTgyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dancer motion"
+    },
+    {
+      "id": "artist-6",
+      "description": "Musician playing a traditional African instrument",
+      "imageUrl": "https://images.unsplash.com/photo-1708512935636-36a3dba7cfc4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhZnJpY2FuJTIwaW5zdHJ1bWVudHxlbnwwfHx8fDE3NjE2NTQxODJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "african instrument"
+    },
+    {
+      "id": "partner-1",
+      "description": "Logo for a media partner",
+      "imageUrl": "https://images.unsplash.com/photo-1678483789123-e8a73f82addb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtZWRpYSUyMGxvZ298ZW58MHx8fHwxNzYxNjU0MTgyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "media logo"
+    },
+    {
+      "id": "partner-2",
+      "description": "Logo for a music streaming service",
+      "imageUrl": "https://images.unsplash.com/photo-1509897693578-e9237fb35e3f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtdXNpYyUyMGxvZ298ZW58MHx8fHwxNzYxNTc5NDU2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "music logo"
+    },
+    {
+      "id": "partner-3",
+      "description": "Logo for a radio station",
+      "imageUrl": "https://images.unsplash.com/photo-1565193047451-150663ee22e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxyYWRpbyUyMGxvZ298ZW58MHx8fHwxNzYxNTk2ODAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "radio logo"
+    },
+    {
+      "id": "partner-4",
+      "description": "Logo for a record label",
+      "imageUrl": "https://images.unsplash.com/photo-1668775589972-3aa874ea191b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxsYWJlbCUyMGxvZ298ZW58MHx8fHwxNzYxNjU0MTgyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "label logo"
+    },
+    {
+      "id": "partner-5",
+      "description": "Logo for a festival sponsor",
+      "imageUrl": "https://images.unsplash.com/photo-1733714654967-aee8a997afdb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmZXN0aXZhbCUyMGxvZ298ZW58MHx8fHwxNzYxNjU0MTgyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "festival logo"
+    },
+    {
+      "id": "event-banner-1",
+      "description": "Crowd at a music festival at night",
+      "imageUrl": "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtdXNpYyUyMGZlc3RpdmFsfGVufDB8fHx8MTc2MTY0NDY5NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "music festival"
+    }
+  ]
 }
