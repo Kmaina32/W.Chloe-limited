@@ -7,7 +7,9 @@ interface EventCardProps {
 }
 
 export function EventCard({ event }: EventCardProps) {
-  const eventDate = new Date(event.date);
+  // By appending 'T00:00:00Z', we treat the date string as UTC.
+  // This ensures both server and client parse it identically, avoiding hydration mismatch.
+  const eventDate = new Date(`${event.date}T00:00:00Z`);
 
   return (
     <Card className="transition-shadow hover:shadow-lg hover:shadow-primary/10">
@@ -22,6 +24,7 @@ export function EventCard({ event }: EventCardProps) {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
+              timeZone: 'UTC', // Specify UTC timezone for consistent output
             })}
           </span>
         </div>
