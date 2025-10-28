@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Calendar, Handshake, LayoutDashboard, Sparkles, Users, Users2 } from 'lucide-react';
 
 import {
@@ -26,6 +26,11 @@ export default function AdminLayout({
 }) {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -33,7 +38,7 @@ export default function AdminLayout({
     }
   }, [isUserLoading, user, router]);
 
-  if (isUserLoading || !user) {
+  if (isUserLoading || !user || !isClient) {
     return (
       <div className="flex items-center justify-center h-screen">
         <p>Loading admin dashboard...</p>
