@@ -29,7 +29,7 @@ export default function Home() {
         <section className="relative h-[60vh] flex items-center justify-center text-center text-white">
           <div className="absolute inset-0 bg-black/60 z-10" />
           <video
-            src="https://videos.pexels.com/video-files/853877/853877-hd_1280_720_25fps.mp4"
+            src="https://videos.pexels.com/video-files/8038164/8038164-hd_1920_1080_24fps.mp4"
             autoPlay
             loop
             muted
