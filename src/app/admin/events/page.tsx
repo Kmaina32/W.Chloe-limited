@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemoFirebase } from '@/firebase/provider';
 import { collection, orderBy, query } from 'firebase/firestore';
 import { useFirestore, useCollection } from '@/firebase';
 import { Button } from '@/components/ui/button';
@@ -46,7 +46,7 @@ import type { Event } from '@/lib/data';
 export default function AdminEventsPage() {
   const firestore = useFirestore();
 
-  const eventsCollection = useMemo(() => {
+  const eventsCollection = useMemoFirebase(() => {
     if (!firestore) return null;
     return query(collection(firestore, 'events'), orderBy('date', 'desc'));
   }, [firestore]);

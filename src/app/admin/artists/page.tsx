@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemoFirebase } from '@/firebase/provider';
 import { collection, orderBy, query } from 'firebase/firestore';
 import { useFirestore, useCollection } from '@/firebase';
 import { Button } from '@/components/ui/button';
@@ -47,7 +47,7 @@ import type { Artist } from '@/lib/data';
 export default function AdminArtistsPage() {
   const firestore = useFirestore();
 
-  const artistsCollection = useMemo(() => {
+  const artistsCollection = useMemoFirebase(() => {
     if (!firestore) return null;
     return query(collection(firestore, 'artists'), orderBy('name', 'asc'));
   }, [firestore]);

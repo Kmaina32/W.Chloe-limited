@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemoFirebase } from '@/firebase/provider';
 import { collection, orderBy, query } from 'firebase/firestore';
 import { useFirestore, useCollection } from '@/firebase';
 import { Button } from '@/components/ui/button';
@@ -48,7 +48,7 @@ import Link from 'next/link';
 export default function AdminPartnersPage() {
   const firestore = useFirestore();
 
-  const partnersCollection = useMemo(() => {
+  const partnersCollection = useMemoFirebase(() => {
     if (!firestore) return null;
     return query(collection(firestore, 'partners'), orderBy('name', 'asc'));
   }, [firestore]);
