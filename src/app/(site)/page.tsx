@@ -28,13 +28,12 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative h-[60vh] flex items-center justify-center text-center text-white">
           <div className="absolute inset-0 bg-black/60 z-10" />
-          <video
-            src="https://videos.pexels.com/video-files/8038164/8038164-hd_1920_1080_24fps.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
+          <Image
+            src="https://cdn.prod.website-files.com/673613aae2ea8c20504cbf6e/682f3449c7de1f19b5562ca0_concert-anthony-delanoix.jpg"
+            alt="Hero background image of a concert"
+            fill
             className="absolute z-0 w-full h-full object-cover"
+            priority
           />
           <div className="relative z-20 container px-4">
             <h1 className="text-4xl md:text-6xl font-extrabold font-headline tracking-tight">
