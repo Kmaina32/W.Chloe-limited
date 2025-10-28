@@ -25,10 +25,7 @@
           "description": "URL of the user's profile picture."
         }
       },
-      "required": [
-        "uid",
-        "email"
-      ]
+      "required": ["uid", "email"]
     },
     "Artist": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -195,6 +192,25 @@
         "order",
         "isActive"
       ]
+    },
+     "NewsletterSubscriber": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Newsletter Subscriber",
+      "type": "object",
+      "description": "Represents a user who has subscribed to the newsletter.",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The subscriber's email address."
+        },
+        "subscribedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time when the user subscribed."
+        }
+      },
+      "required": [ "email", "subscribedAt" ]
     }
   },
   "auth": {
@@ -240,6 +256,12 @@
         "$ref": "#/entities/UserProfile"
       },
       "description": "Collection of all user profiles. A document is created here upon user registration."
+    },
+    "/newsletterSubscribers/{subscriberId}": {
+      "schema": {
+        "$ref": "#/entities/NewsletterSubscriber"
+      },
+      "description": "Collection of newsletter subscribers. Anyone can add their email to this list."
     }
   }
 }

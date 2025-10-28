@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Facebook, Twitter, Instagram, Linkedin, Send } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, Send, Phone, Mail as MailIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -33,8 +33,15 @@ const Footer = () => {
           {/* Contact */}
           <div>
             <h3 className="text-lg font-semibold mb-4 font-headline">Contact Us</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="mailto:info@wchloe.com" className="hover:text-foreground">info@wchloe.com</a></li>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li className='flex items-center gap-2'>
+                <MailIcon className="w-4 h-4 text-accent" />
+                <a href="mailto:info@wchloe.com" className="hover:text-foreground">info@wchloe.com</a>
+              </li>
+              <li className='flex items-center gap-2'>
+                <Phone className="w-4 h-4 text-accent" />
+                <a href="tel:+254707858885" className="hover:text-foreground">+254 707 858 885</a>
+              </li>
             </ul>
           </div>
 

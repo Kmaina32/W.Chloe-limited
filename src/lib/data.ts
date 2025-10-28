@@ -162,3 +162,8 @@ export type UserProfile = {
   displayName?: string | null;
   photoURL?: string | null;
 };
+export type NewsletterSubscriber = {
+  id: string; // Document ID from Firestore
+  email: string;
+  subscribedAt: string; // ISO date string
+};
