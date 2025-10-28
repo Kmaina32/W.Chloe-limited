@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { Calendar, Handshake, LayoutDashboard, Sparkles, Users, Users2 } from 'lucide-react';
 
 import {
@@ -16,12 +17,30 @@ import {
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useUser } from '@/firebase';
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push('/login');
+    }
+  }, [isUserLoading, user, router]);
+
+  if (isUserLoading || !user) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>Loading admin dashboard...</p>
+      </div>
+    );
+  }
+
   return (
     <SidebarProvider>
       <Sidebar>
