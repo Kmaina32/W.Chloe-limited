@@ -78,7 +78,7 @@ export async function handleSignup(prevState: FormState, formData: FormData): Pr
     initiateEmailSignUp(auth, email, password);
     return {
       success: true,
-      message: 'Signup successful! Please log in.',
+      message: 'Signup initiated. Please wait...',
     };
   } catch (error) {
     return handleAuthError(error);
