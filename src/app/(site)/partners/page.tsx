@@ -1,6 +1,5 @@
-import Image from 'next/image';
 import { partners } from '@/lib/data';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function PartnersPage() {
   return (
@@ -12,18 +11,14 @@ export default function PartnersPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {partners.map((partner) => (
-          <Card key={partner.id} className="p-6 flex items-center justify-center aspect-video bg-card/50 hover:bg-card transition-colors">
-            <div className="relative h-full w-full grayscale hover:grayscale-0 opacity-70 hover:opacity-100 transition-all">
-              <Image
-                src={partner.logoUrl}
-                alt={partner.name}
-                fill
-                className="object-contain"
-                data-ai-hint={partner.imageHint}
-              />
-            </div>
+          <Card key={partner.id} className="bg-card/50 hover:bg-card transition-colors">
+            <CardContent className="p-6 flex items-center justify-center h-full">
+              <p className="text-center font-medium text-muted-foreground group-hover:text-foreground">
+                {partner.name}
+              </p>
+            </CardContent>
           </Card>
         ))}
       </div>

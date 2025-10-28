@@ -17,7 +17,7 @@ export default function Home() {
         <section className="relative h-[60vh] flex items-center justify-center text-center text-white">
           <div className="absolute inset-0 bg-black/60 z-10" />
           <video
-            src="https://videos.pexels.com/video-files/853875/853875-hd_1280_720_30fps.mp4"
+            src="https://videos.pexels.com/video-files/3209828/3209828-hd_1280_720_30fps.mp4"
             autoPlay
             loop
             muted
@@ -75,16 +75,12 @@ export default function Home() {
         <section className="py-16 md:py-24 bg-background">
           <div className="container px-4">
             <h2 className="text-3xl font-bold text-center font-headline mb-12">Our Partners & Sponsors</h2>
-            <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-6">
+            <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4">
               {partners.map((partner) => (
-                <div key={partner.id} className="relative h-12 w-32 grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300">
-                  <Image
-                    src={partner.logoUrl}
-                    alt={partner.name}
-                    fill
-                    className="object-contain"
-                    data-ai-hint={partner.imageHint}
-                  />
+                <div key={partner.id} className="text-center">
+                  <p className="font-semibold text-muted-foreground transition-colors hover:text-foreground">
+                    {partner.name}
+                  </p>
                 </div>
               ))}
             </div>
