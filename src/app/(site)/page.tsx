@@ -16,16 +16,13 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative h-[60vh] flex items-center justify-center text-center text-white">
           <div className="absolute inset-0 bg-black/60 z-10" />
-          {heroImage && (
-            <Image
-              src={heroImage.imageUrl}
-              alt={heroImage.description}
-              fill
-              className="object-cover"
-              priority
-              data-ai-hint={heroImage.imageHint}
-            />
-          )}
+          <video
+            src="https://videos.pexels.com/video-files/853875/853875-hd_1280_720_30fps.mp4"
+            autoPlay
+            loop
+            muted
+            className="absolute z-0 w-full h-full object-cover"
+          />
           <div className="relative z-20 container px-4">
             <h1 className="text-4xl md:text-6xl font-extrabold font-headline tracking-tight">
               Empowering African Talent
