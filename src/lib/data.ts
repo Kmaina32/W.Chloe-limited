@@ -127,13 +127,38 @@ export const partners = [
   { id: '13', name: 'WCB Wasafi', logoUrl: findImage('partner-wcb'), imageHint: 'diamond logo', websiteURL: 'https://www.instagram.com/wcb_wasafi/', description: 'A Tanzanian record label founded by musician Diamond Platnumz.' },
 ];
 
-export type Artist = (typeof artists)[0];
-export type Event = (typeof events)[0];
-export type Partner = (typeof partners)[0];
-export type UserProfile = {
+export type Artist = {
   id: string;
-  uid: string;
-  email: string;
-  displayName: string | null;
-  photoURL: string | null;
+  name: string;
+  genre: string;
+  country: string;
+  imageUrl: string;
+  description?: string;
+  socialMediaLinks?: string[];
+  imageHint?: string;
+};
+export type Event = {
+  id: string;
+  name: string;
+  date: string;
+  location: string;
+  artistIds?: string[];
+  artist?: string;
+  description?: string;
+  imageURL?: string;
+};
+export type Partner = {
+  id: string;
+  name: string;
+  logoUrl: string;
+  websiteURL?: string;
+  description?: string;
+  imageHint?: string;
+};
+export type UserProfile = {
+  id: string; // Document ID from Firestore
+  uid: string; // Firebase Auth user ID
+  email?: string | null;
+  displayName?: string | null;
+  photoURL?: string | null;
 };

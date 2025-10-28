@@ -1,9 +1,9 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { handleLogin, handleSignup, handleGoogleLogin } from './actions';
-import { useAuth } from '@/firebase';
+import { useUser, initializeFirebase } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { GoogleIcon } from '@/components/icons/GoogleIcon';
 import { Separator } from '@/components/ui/separator';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 const initialState = {
   message: '',
@@ -30,11 +31,12 @@ function SubmitButton({ text }: { text: string }) {
 }
 
 export default function LoginPage() {
-  const [loginState, loginAction] = useActionState(handleLogin, initialState);
-  const [signupState, signupAction] = useActionState(handleSignup, initialState);
-  const { user, isUserLoading } = useAuth();
+  const { user, isUserLoading } = useUser();
   const router = useRouter();
   const { toast } = useToast();
+
+  const [loginState, loginAction] = useActionState(handleLogin, initialState);
+  const [signupState, signupAction] = useActionState(handleSignup, initialState);
 
   useEffect(() => {
     if (user && !isUserLoading) {
@@ -62,6 +64,7 @@ export default function LoginPage() {
     }
   }, [signupState, toast]);
 
+
   if (isUserLoading || user) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -87,8 +90,8 @@ export default function LoginPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                 <form action={handleGoogleLogin}>
-                  <Button variant="outline" className="w-full">
+                 <form action={() => handleGoogleLogin()}>
+                  <Button variant="outline" className="w-full" type="submit">
                     <GoogleIcon className="mr-2 h-4 w-4" />
                     Sign in with Google
                   </Button>
@@ -123,8 +126,8 @@ export default function LoginPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <form action={handleGoogleLogin}>
-                  <Button variant="outline" className="w-full">
+                <form action={() => handleGoogleLogin()}>
+                  <Button variant="outline" className="w-full" type="submit">
                     <GoogleIcon className="mr-2 h-4 w-4" />
                      Sign up with Google
                   </Button>

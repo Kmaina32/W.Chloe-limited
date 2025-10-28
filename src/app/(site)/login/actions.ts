@@ -1,15 +1,19 @@
 'use server';
 
 import { z } from 'zod';
-import { getSdks, initializeFirebase } from '@/firebase';
+import { getAuth } from 'firebase-admin/auth';
+import { getFirestore } from 'firebase-admin/firestore';
+import { initializeFirebaseAdmin } from '@/firebase/server';
 import {
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
   GoogleAuthProvider,
   signInWithRedirect,
-  updateProfile,
 } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { getAuth as getClientAuth } from 'firebase/auth';
+import { initializeFirebase as initializeClientFirebase } from '@/firebase';
+
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -26,6 +30,7 @@ function handleAuthError(error: any): FormState {
     switch (error.code) {
       case 'auth/user-not-found':
       case 'auth/wrong-password':
+      case 'auth/invalid-credential':
         return { success: false, message: 'Invalid credentials. Please try again.' };
       case 'auth/email-already-in-use':
         return { success: false, message: 'This email is already registered.' };
@@ -36,23 +41,49 @@ function handleAuthError(error: any): FormState {
       case 'auth/operation-not-allowed':
         return { success: false, message: 'Email/password accounts are not enabled.' };
       default:
-        return { success: false, message: 'An unexpected authentication error occurred.' };
+        return { success: false, message: `An unexpected authentication error occurred: ${error.code}` };
     }
   }
   return { success: false, message: error.message || 'An unknown error occurred.' };
 }
 
-async function createUserProfile(user: import('firebase/auth').User) {
-  const { firestore } = getSdks(initializeFirebase().firebaseApp);
-  const userDocRef = doc(firestore, 'users', user.uid);
+async function createUserProfile(user: { uid: string, email: string | null, displayName: string | null, photoURL: string | null }) {
+  await initializeFirebaseAdmin();
+  const firestore = getFirestore();
+  const userDocRef = firestore.collection('users').doc(user.uid);
   const userProfile = {
     uid: user.uid,
     email: user.email,
     displayName: user.displayName,
     photoURL: user.photoURL,
   };
-  await setDoc(userDocRef, userProfile, { merge: true });
+  await userDocRef.set(userProfile, { merge: true });
 }
+
+// NOTE: This function still runs on the client to initiate the flow,
+// but the user creation happens after redirect via onAuthStateChanged.
+export async function handleGoogleLogin(): Promise<void> {
+  'use client';
+  // This function redirects, so it doesn't return a state.
+  // The result is handled by onAuthStateChanged after the redirect.
+  try {
+    const { auth } = initializeClientFirebase();
+    const provider = new GoogleAuthProvider();
+    await signInWithRedirect(auth, provider);
+    // After redirect, an onAuthStateChanged listener elsewhere should handle profile creation.
+  } catch (error) {
+    // This error will likely not be seen by the user due to the redirect,
+    // but it's good practice to handle it.
+    console.error("Google Sign-In Error:", handleAuthError(error).message);
+  }
+}
+
+// The remaining functions (handleLogin, handleSignup) are complex and will be handled on the client
+// to avoid passing credentials to the server. We will refactor them to use client-side Firebase SDK.
+
+// We will leave handleLogin and handleSignup as they are, but recognize they will be called
+// from a client component and use the client-side firebase SDK implicitly.
+// The code in the login page will be updated to handle this correctly.
 
 export async function handleLogin(prevState: FormState, formData: FormData): Promise<FormState> {
   const validatedFields = loginSchema.safeParse(Object.fromEntries(formData.entries()));
@@ -66,7 +97,7 @@ export async function handleLogin(prevState: FormState, formData: FormData): Pro
   const { email, password } = validatedFields.data;
 
   try {
-    const { auth } = getSdks(initializeFirebase().firebaseApp);
+    const { auth } = initializeClientFirebase();
     await signInWithEmailAndPassword(auth, email, password);
     return {
       success: true,
@@ -89,15 +120,15 @@ export async function handleSignup(prevState: FormState, formData: FormData): Pr
   const { email, password } = validatedFields.data;
 
   try {
-    const { auth } = getSdks(initializeFirebase().firebaseApp);
+    const { auth } = initializeClientFirebase();
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // Set a default display name if not available
     const displayName = user.displayName || email.split('@')[0];
     await updateProfile(user, { displayName });
 
-    // Create user profile in Firestore
+    // The user profile is created on the client via onAuthStateChanged listener in FirebaseProvider
+    // but we can call our server function here as well for immediate effect if needed.
     await createUserProfile({ ...user, displayName });
 
     return {
@@ -106,20 +137,5 @@ export async function handleSignup(prevState: FormState, formData: FormData): Pr
     };
   } catch (error) {
     return handleAuthError(error);
-  }
-}
-
-export async function handleGoogleLogin(): Promise<void> {
-  // This function redirects, so it doesn't return a state.
-  // The result is handled by onAuthStateChanged after the redirect.
-  try {
-    const { auth } = getSdks(initializeFirebase().firebaseApp);
-    const provider = new GoogleAuthProvider();
-    await signInWithRedirect(auth, provider);
-    // After redirect, an onAuthStateChanged listener elsewhere should handle profile creation.
-  } catch (error) {
-    // This error will likely not be seen by the user due to the redirect,
-    // but it's good practice to handle it.
-    console.error("Google Sign-In Error:", handleAuthError(error).message);
   }
 }

@@ -1,9 +1,10 @@
 'use server';
 
 import { z } from 'zod';
-import { addDoc, setDoc } from 'firebase/firestore';
-import { collection, doc } from 'firebase/firestore';
-import { getSdks, initializeFirebase } from '@/firebase';
+import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
+import { getFirestore } from 'firebase-admin/firestore';
+import { initializeFirebaseAdmin } from '@/firebase/server';
+
 
 const partnerSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -36,7 +37,8 @@ export async function addPartner(
   }
 
   try {
-    const { firestore } = getSdks(initializeFirebase().firebaseApp);
+    await initializeFirebaseAdmin();
+    const firestore = getFirestore();
     const partnersCollection = collection(firestore, 'partners');
     await addDoc(partnersCollection, validatedFields.data);
     
@@ -79,7 +81,8 @@ export async function editPartner(
   }
 
   try {
-    const { firestore } = getSdks(initializeFirebase().firebaseApp);
+    await initializeFirebaseAdmin();
+    const firestore = getFirestore();
     const partnerDocRef = doc(firestore, 'partners', partnerId);
     await setDoc(partnerDocRef, validatedFields.data, { merge: true });
     

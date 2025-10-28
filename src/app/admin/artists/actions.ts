@@ -1,9 +1,9 @@
 'use server';
 
 import { z } from 'zod';
-import { addDoc, setDoc } from 'firebase/firestore';
-import { collection, doc } from 'firebase/firestore';
-import { getSdks, initializeFirebase } from '@/firebase';
+import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
+import { getFirestore } from 'firebase-admin/firestore';
+import { initializeFirebaseAdmin } from '@/firebase/server';
 
 const artistSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -37,7 +37,8 @@ export async function addArtist(
   }
 
   try {
-    const { firestore } = getSdks(initializeFirebase().firebaseApp);
+    await initializeFirebaseAdmin();
+    const firestore = getFirestore();
     const artistsCollection = collection(firestore, 'artists');
     await addDoc(artistsCollection, validatedFields.data);
     
@@ -80,7 +81,8 @@ export async function editArtist(
   }
 
   try {
-    const { firestore } = getSdks(initializeFirebase().firebaseApp);
+    await initializeFirebaseAdmin();
+    const firestore = getFirestore();
     const artistDocRef = doc(firestore, 'artists', artistId);
     await setDoc(artistDocRef, validatedFields.data, { merge: true });
     
