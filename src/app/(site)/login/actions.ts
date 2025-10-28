@@ -2,7 +2,12 @@
 
 import { z } from 'zod';
 import { getSdks, initializeFirebase } from '@/firebase';
-import { initiateEmailSignIn, initiateEmailSignUp, initiateGoogleSignIn } from '@/firebase/non-blocking-login';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithRedirect,
+} from 'firebase/auth';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -15,26 +20,24 @@ export type FormState = {
 };
 
 function handleAuthError(error: any): FormState {
-  // Firebase auth errors have a 'code' property.
-  // We check if the error is an object and has this property.
   if (typeof error === 'object' && error !== null && 'code' in error) {
     switch (error.code) {
       case 'auth/user-not-found':
-        return { success: false, message: 'No user found with this email.' };
       case 'auth/wrong-password':
-        return { success: false, message: 'Incorrect password. Please try again.' };
+        return { success: false, message: 'Invalid credentials. Please try again.' };
       case 'auth/email-already-in-use':
-        return { success: false, message: 'This email is already in use.' };
+        return { success: false, message: 'This email is already registered.' };
       case 'auth/weak-password':
-        return { success: false, message: 'The password is too weak.' };
+        return { success: false, message: 'The password is too weak. Please use at least 6 characters.' };
       case 'auth/invalid-email':
-          return { success: false, message: 'The email address is not valid.' };
+        return { success: false, message: 'The email address is not valid.' };
+      case 'auth/operation-not-allowed':
+        return { success: false, message: 'Email/password accounts are not enabled.' };
       default:
-        return { success: false, message: 'An unexpected error occurred. Please try again.' };
+        return { success: false, message: 'An unexpected authentication error occurred.' };
     }
   }
-  // Fallback for non-Firebase errors
-  return { success: false, message: 'An unknown error occurred.' };
+  return { success: false, message: error.message || 'An unknown error occurred.' };
 }
 
 export async function handleLogin(prevState: FormState, formData: FormData): Promise<FormState> {
@@ -50,12 +53,10 @@ export async function handleLogin(prevState: FormState, formData: FormData): Pro
 
   try {
     const { auth } = getSdks(initializeFirebase().firebaseApp);
-    initiateEmailSignIn(auth, email, password);
-    // Non-blocking, so we return a success message assuming the process starts.
-    // The UI will react to the onAuthStateChanged listener.
+    await signInWithEmailAndPassword(auth, email, password);
     return {
       success: true,
-      message: 'Login initiated. Redirecting...',
+      message: 'Login successful! Redirecting...',
     };
   } catch (error) {
     return handleAuthError(error);
@@ -75,25 +76,26 @@ export async function handleSignup(prevState: FormState, formData: FormData): Pr
 
   try {
     const { auth } = getSdks(initializeFirebase().firebaseApp);
-    initiateEmailSignUp(auth, email, password);
+    await createUserWithEmailAndPassword(auth, email, password);
     return {
       success: true,
-      message: 'Signup initiated. Please wait...',
+      message: 'Signup successful! You are now logged in.',
     };
   } catch (error) {
     return handleAuthError(error);
   }
 }
 
-export async function handleGoogleLogin(): Promise<FormState> {
+export async function handleGoogleLogin(): Promise<void> {
+  // This function redirects, so it doesn't return a state.
+  // The result is handled by onAuthStateChanged after the redirect.
   try {
     const { auth } = getSdks(initializeFirebase().firebaseApp);
-    initiateGoogleSignIn(auth);
-    return {
-      success: true,
-      message: 'Google Sign-In initiated.',
-    };
+    const provider = new GoogleAuthProvider();
+    await signInWithRedirect(auth, provider);
   } catch (error) {
-    return handleAuthError(error);
+    // This error will likely not be seen by the user due to the redirect,
+    // but it's good practice to handle it.
+    console.error("Google Sign-In Error:", handleAuthError(error).message);
   }
 }

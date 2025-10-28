@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemoFirebase } from '@/firebase/provider';
-import { collection, orderBy, query } from 'firebase/firestore';
+import { collection, orderBy, query, doc, deleteDoc } from 'firebase/firestore';
 import { useFirestore, useCollection } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
@@ -38,8 +38,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { deleteDocumentNonBlocking } from '@/firebase';
-import { doc } from 'firebase/firestore';
 import { AddPartnerDialog } from './components/AddPartnerDialog';
 import { EditPartnerDialog } from './components/EditPartnerDialog';
 import type { Partner } from '@/lib/data';
@@ -55,10 +53,10 @@ export default function AdminPartnersPage() {
   
   const { data: partners, isLoading } = useCollection<Partner>(partnersCollection);
 
-  const handleDelete = (partnerId: string) => {
+  const handleDelete = async (partnerId: string) => {
     if (!firestore) return;
     const docRef = doc(firestore, 'partners', partnerId);
-    deleteDocumentNonBlocking(docRef);
+    await deleteDoc(docRef);
   };
 
   return (

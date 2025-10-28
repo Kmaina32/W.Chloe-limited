@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemoFirebase } from '@/firebase/provider';
-import { collection, orderBy, query } from 'firebase/firestore';
+import { collection, orderBy, query, doc, deleteDoc } from 'firebase/firestore';
 import { useFirestore, useCollection } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
@@ -37,8 +37,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { deleteDocumentNonBlocking } from '@/firebase';
-import { doc } from 'firebase/firestore';
 import { AddEventDialog } from './components/AddEventDialog';
 import { EditEventDialog } from './components/EditEventDialog';
 import type { Event } from '@/lib/data';
@@ -53,10 +51,10 @@ export default function AdminEventsPage() {
   
   const { data: events, isLoading } = useCollection<Event>(eventsCollection);
 
-  const handleDelete = (eventId: string) => {
+  const handleDelete = async (eventId: string) => {
     if (!firestore) return;
     const docRef = doc(firestore, 'events', eventId);
-    deleteDocumentNonBlocking(docRef);
+    await deleteDoc(docRef);
   };
 
   return (

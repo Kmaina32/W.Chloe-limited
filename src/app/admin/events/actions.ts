@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { addDocumentNonBlocking, setDocumentNonBlocking } from '@/firebase';
+import { addDoc, setDoc } from 'firebase/firestore';
 import { collection, doc } from 'firebase/firestore';
 import { getSdks, initializeFirebase } from '@/firebase';
 
@@ -39,17 +39,17 @@ export async function addEvent(
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
     const eventsCollection = collection(firestore, 'events');
-    addDocumentNonBlocking(eventsCollection, validatedFields.data);
+    await addDoc(eventsCollection, validatedFields.data);
     
     return {
       success: true,
       message: 'Event added successfully!',
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return {
       success: false,
-      message: 'Failed to add event. Please try again.',
+      message: error.message || 'Failed to add event. Please try again.',
       fields: Object.fromEntries(formData.entries()),
     };
   }
@@ -82,17 +82,17 @@ export async function editEvent(
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
     const eventDocRef = doc(firestore, 'events', eventId);
-    setDocumentNonBlocking(eventDocRef, validatedFields.data, { merge: true });
+    await setDoc(eventDocRef, validatedFields.data, { merge: true });
     
     return {
       success: true,
       message: 'Event updated successfully!',
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return {
       success: false,
-      message: 'Failed to update event. Please try again.',
+      message: error.message || 'Failed to update event. Please try again.',
       fields: Object.fromEntries(formData.entries()),
     };
   }

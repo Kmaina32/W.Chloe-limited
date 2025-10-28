@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { addDocumentNonBlocking, setDocumentNonBlocking } from '@/firebase';
+import { addDoc, setDoc } from 'firebase/firestore';
 import { collection, doc } from 'firebase/firestore';
 import { getSdks, initializeFirebase } from '@/firebase';
 
@@ -38,17 +38,17 @@ export async function addPartner(
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
     const partnersCollection = collection(firestore, 'partners');
-    addDocumentNonBlocking(partnersCollection, validatedFields.data);
+    await addDoc(partnersCollection, validatedFields.data);
     
     return {
       success: true,
       message: 'Partner added successfully!',
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return {
       success: false,
-      message: 'Failed to add partner. Please try again.',
+      message: error.message || 'Failed to add partner. Please try again.',
       fields: Object.fromEntries(formData.entries()),
     };
   }
@@ -81,17 +81,17 @@ export async function editPartner(
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
     const partnerDocRef = doc(firestore, 'partners', partnerId);
-    setDocumentNonBlocking(partnerDocRef, validatedFields.data, { merge: true });
+    await setDoc(partnerDocRef, validatedFields.data, { merge: true });
     
     return {
       success: true,
       message: 'Partner updated successfully!',
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return {
       success: false,
-      message: 'Failed to update partner. Please try again.',
+      message: error.message || 'Failed to update partner. Please try again.',
       fields: Object.fromEntries(formData.entries()),
     };
   }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemoFirebase } from '@/firebase/provider';
-import { collection, orderBy, query } from 'firebase/firestore';
+import { collection, orderBy, query, doc, deleteDoc } from 'firebase/firestore';
 import { useFirestore, useCollection } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
@@ -38,8 +38,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { deleteDocumentNonBlocking } from '@/firebase';
-import { doc } from 'firebase/firestore';
 import { AddArtistDialog } from './components/AddArtistDialog';
 import { EditArtistDialog } from './components/EditArtistDialog';
 import type { Artist } from '@/lib/data';
@@ -54,10 +52,10 @@ export default function AdminArtistsPage() {
   
   const { data: artists, isLoading } = useCollection<Artist>(artistsCollection);
 
-  const handleDelete = (artistId: string) => {
+  const handleDelete = async (artistId: string) => {
     if (!firestore) return;
     const docRef = doc(firestore, 'artists', artistId);
-    deleteDocumentNonBlocking(docRef);
+    await deleteDoc(docRef);
   };
 
   return (

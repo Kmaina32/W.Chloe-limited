@@ -1,10 +1,9 @@
 'use server';
 
 import { z } from 'zod';
-import { addDocumentNonBlocking, setDocumentNonBlocking } from '@/firebase';
+import { addDoc, setDoc } from 'firebase/firestore';
 import { collection, doc } from 'firebase/firestore';
-import { getSdks } from '@/firebase';
-import { initializeFirebase } from '@/firebase';
+import { getSdks, initializeFirebase } from '@/firebase';
 
 const artistSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -40,17 +39,17 @@ export async function addArtist(
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
     const artistsCollection = collection(firestore, 'artists');
-    addDocumentNonBlocking(artistsCollection, validatedFields.data);
+    await addDoc(artistsCollection, validatedFields.data);
     
     return {
       success: true,
       message: 'Artist added successfully!',
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return {
       success: false,
-      message: 'Failed to add artist. Please try again.',
+      message: error.message || 'Failed to add artist. Please try again.',
       fields: Object.fromEntries(formData.entries()),
     };
   }
@@ -83,17 +82,17 @@ export async function editArtist(
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
     const artistDocRef = doc(firestore, 'artists', artistId);
-    setDocumentNonBlocking(artistDocRef, validatedFields.data, { merge: true });
+    await setDoc(artistDocRef, validatedFields.data, { merge: true });
     
     return {
       success: true,
       message: 'Artist updated successfully!',
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     return {
       success: false,
-      message: 'Failed to update artist. Please try again.',
+      message: error.message || 'Failed to update artist. Please try again.',
       fields: Object.fromEntries(formData.entries()),
     };
   }
