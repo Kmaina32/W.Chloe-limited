@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Calendar, Handshake, LayoutDashboard, Music4, Sparkles, Users } from 'lucide-react';
+import { Calendar, Handshake, LayoutDashboard, Building2, Sparkles, Users } from 'lucide-react';
 
 import {
   SidebarProvider,
@@ -33,7 +33,7 @@ const AdminSidebar = () => {
       <Sidebar>
         <SidebarHeader>
           <Link href="/admin" className="flex items-center gap-2">
-            <Music4 className="h-6 w-6 text-primary" />
+            <Building2 className="h-6 w-6 text-primary" />
             <span className="font-bold font-headline text-lg text-sidebar-foreground">W.Chloe Limited</span>
           </Link>
         </SidebarHeader>
@@ -82,7 +82,7 @@ export default function AdminLayout({
       <Sidebar>
         <SidebarHeader>
           <Link href="/admin" className="flex items-center gap-2">
-            <Music4 className="h-6 w-6 text-primary" />
+            <Building2 className="h-6 w-6 text-primary" />
             <span className="font-bold font-headline text-lg text-sidebar-foreground">W.Chloe Limited</span>
           </Link>
         </SidebarHeader>

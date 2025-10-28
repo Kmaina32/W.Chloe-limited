@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, Music4 } from 'lucide-react';
+import { Menu, Building2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -23,7 +23,7 @@ const Header = () => {
       <div className="container flex h-16 items-center">
         <div className="mr-4 flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Music4 className="h-6 w-6 text-primary" />
+            <Building2 className="h-6 w-6 text-primary" />
             <span className="font-bold font-headline text-lg">W.Chloe Limited</span>
           </Link>
           <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
@@ -54,7 +54,7 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent side="left">
               <Link href="/" className="mb-8 flex items-center space-x-2">
-                <Music4 className="h-6 w-6 text-primary" />
+                <Building2 className="h-6 w-6 text-primary" />
                 <span className="font-bold font-headline text-lg">W.Chloe Limited</span>
               </Link>
               <nav className="flex flex-col space-y-4">
