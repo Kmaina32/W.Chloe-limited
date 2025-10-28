@@ -21,6 +21,7 @@ export default function Home() {
             autoPlay
             loop
             muted
+            playsInline
             className="absolute z-0 w-full h-full object-cover"
           />
           <div className="relative z-20 container px-4">
