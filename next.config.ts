@@ -34,6 +34,12 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.prod.website-files.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.evbuc.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
@@ -53,3 +59,5 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+    
