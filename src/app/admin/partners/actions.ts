@@ -38,7 +38,7 @@ export async function addPartner(
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
     const partnersCollection = collection(firestore, 'partners');
-    await addDocumentNonBlocking(partnersCollection, validatedFields.data);
+    addDocumentNonBlocking(partnersCollection, validatedFields.data);
     
     return {
       success: true,
@@ -81,7 +81,7 @@ export async function editPartner(
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
     const partnerDocRef = doc(firestore, 'partners', partnerId);
-    await setDocumentNonBlocking(partnerDocRef, validatedFields.data, { merge: true });
+    setDocumentNonBlocking(partnerDocRef, validatedFields.data, { merge: true });
     
     return {
       success: true,

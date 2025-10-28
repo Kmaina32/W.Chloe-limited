@@ -39,7 +39,7 @@ export async function addEvent(
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
     const eventsCollection = collection(firestore, 'events');
-    await addDocumentNonBlocking(eventsCollection, validatedFields.data);
+    addDocumentNonBlocking(eventsCollection, validatedFields.data);
     
     return {
       success: true,
@@ -82,7 +82,7 @@ export async function editEvent(
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
     const eventDocRef = doc(firestore, 'events', eventId);
-    await setDocumentNonBlocking(eventDocRef, validatedFields.data, { merge: true });
+    setDocumentNonBlocking(eventDocRef, validatedFields.data, { merge: true });
     
     return {
       success: true,

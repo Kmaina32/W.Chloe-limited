@@ -1,16 +1,38 @@
 {
   "entities": {
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User Profile",
+      "type": "object",
+      "description": "Represents a user's public profile.",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The user's unique ID."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's email address."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The user's display name."
+        },
+        "photoURL": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the user's profile picture."
+        }
+      },
+      "required": ["uid", "email"]
+    },
     "Artist": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Artist",
       "type": "object",
       "description": "Represents an artist, actor, or DJ profile.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the artist.",
-          "format": "uuid"
-        },
         "name": {
           "type": "string",
           "description": "The name of the artist."
@@ -23,7 +45,7 @@
           "type": "string",
           "description": "The country the artist is from."
         },
-        "imageURL": {
+        "imageUrl": {
           "type": "string",
           "description": "URL of the artist's profile image.",
           "format": "uri"
@@ -41,11 +63,10 @@
         }
       },
       "required": [
-        "id",
         "name",
         "genre",
         "country",
-        "imageURL"
+        "imageUrl"
       ]
     },
     "Event": {
@@ -54,11 +75,6 @@
       "type": "object",
       "description": "Represents an event featuring artists.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the event.",
-          "format": "uuid"
-        },
         "name": {
           "type": "string",
           "description": "The name of the event."
@@ -90,7 +106,6 @@
         }
       },
       "required": [
-        "id",
         "name",
         "date",
         "location"
@@ -102,16 +117,11 @@
       "type": "object",
       "description": "Represents a partner or sponsor of the platform.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the partner.",
-          "format": "uuid"
-        },
         "name": {
           "type": "string",
           "description": "The name of the partner organization."
         },
-        "logoURL": {
+        "logoUrl": {
           "type": "string",
           "description": "URL of the partner's logo.",
           "format": "uri"
@@ -127,36 +137,19 @@
         }
       },
       "required": [
-        "id",
         "name",
-        "logoURL"
+        "logoUrl"
       ]
     },
     "Admin": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Admin",
       "type": "object",
-      "description": "Represents an administrator user with access to the admin panel.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the administrator.",
-          "format": "uuid"
-        },
-        "username": {
-          "type": "string",
-          "description": "The username of the administrator."
-        },
-        "email": {
-          "type": "string",
-          "description": "The email address of the administrator.",
-          "format": "email"
+      "description": "Represents an administrator user with access to the admin panel. Extends UserProfile.",
+      "allOf": [
+        {
+          "$ref": "#/entities/UserProfile"
         }
-      },
-      "required": [
-        "id",
-        "username",
-        "email"
       ]
     },
     "Content": {
@@ -209,88 +202,35 @@
     ]
   },
   "firestore": {
-    "structure": [
-      {
-        "path": "/admins/{adminId}",
-        "definition": {
-          "entityName": "Admin",
-          "schema": {
-            "$ref": "#/backend/entities/Admin"
-          },
-          "description": "Collection of administrator user IDs. Existence of a document with the user's ID grants admin privileges.",
-          "params": [
-            {
-              "name": "adminId",
-              "description": "The Firebase Auth UID of the administrator."
-            }
-          ]
-        }
+    "/admins/{adminId}": {
+      "schema": {
+        "$ref": "#/entities/Admin"
       },
-      {
-        "path": "/artists/{artistId}",
-        "definition": {
-          "entityName": "Artist",
-          "schema": {
-            "$ref": "#/backend/entities/Artist"
-          },
-          "description": "Collection of artist profiles. Accessible and manageable by admins.",
-          "params": [
-            {
-              "name": "artistId",
-              "description": "Unique identifier for the artist."
-            }
-          ]
-        }
+      "description": "Collection of administrator user IDs. Existence of a document with the user's ID grants admin privileges."
+    },
+    "/artists/{artistId}": {
+      "schema": {
+        "$ref": "#/entities/Artist"
       },
-      {
-        "path": "/events/{eventId}",
-        "definition": {
-          "entityName": "Event",
-          "schema": {
-            "$ref": "#/backend/entities/Event"
-          },
-          "description": "Collection of event listings. Accessible and manageable by admins.",
-          "params": [
-            {
-              "name": "eventId",
-              "description": "Unique identifier for the event."
-            }
-          ]
-        }
+      "description": "Collection of artist profiles. Accessible and manageable by admins."
+    },
+    "/events/{eventId}": {
+      "schema": {
+        "$ref": "#/entities/Event"
       },
-      {
-        "path": "/partners/{partnerId}",
-        "definition": {
-          "entityName": "Partner",
-          "schema": {
-            "$ref": "#/backend/entities/Partner"
-          },
-          "description": "Collection of partner profiles. Accessible and manageable by admins.",
-          "params": [
-            {
-              "name": "partnerId",
-              "description": "Unique identifier for the partner."
-            }
-          ]
-        }
+      "description": "Collection of event listings. Accessible and manageable by admins."
+    },
+    "/partners/{partnerId}": {
+      "schema": {
+        "$ref": "#/entities/Partner"
       },
-      {
-        "path": "/content/{contentId}",
-        "definition": {
-          "entityName": "Content",
-          "schema": {
-            "$ref": "#/backend/entities/Content"
-          },
-          "description": "Collection of curated content items. Accessible and manageable by admins.",
-          "params": [
-            {
-              "name": "contentId",
-              "description": "Unique identifier for the content item."
-            }
-          ]
-        }
-      }
-    ],
-    "reasoning": "This Firestore structure prioritizes administrative control over content, artists, events, and partners. To ensure authorization independence and simplify security rules, all relevant data is structured to avoid complex `get()` calls. The structure uses structural segregation to ensure that each collection has a homogeneous security posture. An `admins` collection stores administrator UIDs to control access to content and entity management. All content is centrally managed under the `content` collection, enabling easy querying and updates for front-end display. Artists, Events and Partners are stored in flat collections so the Admin can easily create, update and delete any resource.\n\nThe structure achieves Authorization Independence by relying on the `admins` collection for authorization. Security rules can simply check for the existence of a user's UID in the `admins` collection to grant access to manage content, artists, events, and partners. This avoids hierarchical dependencies.\n\nIt supports QAPs (Rules are not Filters) by segregating data into distinct collections based on entity type (artists, events, partners, content). This allows for secure `list` operations without requiring complex filtering logic in the security rules."
+      "description": "Collection of partner profiles. Accessible and manageable by admins."
+    },
+    "/content/{contentId}": {
+      "schema": {
+        "$ref": "#/entities/Content"
+      },
+      "description": "Collection of curated content items. Accessible and manageable by admins."
+    }
   }
 }

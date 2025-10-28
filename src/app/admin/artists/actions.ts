@@ -40,7 +40,7 @@ export async function addArtist(
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
     const artistsCollection = collection(firestore, 'artists');
-    await addDocumentNonBlocking(artistsCollection, validatedFields.data);
+    addDocumentNonBlocking(artistsCollection, validatedFields.data);
     
     return {
       success: true,
@@ -83,7 +83,7 @@ export async function editArtist(
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
     const artistDocRef = doc(firestore, 'artists', artistId);
-    await setDocumentNonBlocking(artistDocRef, validatedFields.data, { merge: true });
+    setDocumentNonBlocking(artistDocRef, validatedFields.data, { merge: true });
     
     return {
       success: true,
