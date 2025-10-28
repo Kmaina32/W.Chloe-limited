@@ -34,7 +34,7 @@ const AdminSidebar = () => {
         <SidebarHeader>
           <Link href="/admin" className="flex items-center gap-2">
             <Music4 className="h-6 w-6 text-primary" />
-            <span className="font-bold font-headline text-lg text-sidebar-foreground">Rhythm Root</span>
+            <span className="font-bold font-headline text-lg text-sidebar-foreground">W.Chloe Limited</span>
           </Link>
         </SidebarHeader>
         <SidebarContent>
@@ -83,7 +83,7 @@ export default function AdminLayout({
         <SidebarHeader>
           <Link href="/admin" className="flex items-center gap-2">
             <Music4 className="h-6 w-6 text-primary" />
-            <span className="font-bold font-headline text-lg text-sidebar-foreground">Rhythm Root</span>
+            <span className="font-bold font-headline text-lg text-sidebar-foreground">W.Chloe Limited</span>
           </Link>
         </SidebarHeader>
         <SidebarContent>

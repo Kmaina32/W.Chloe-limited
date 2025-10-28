@@ -43,7 +43,7 @@ export default function AdminDashboardPage() {
             <div className="mt-8">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Welcome to Rhythm Root</CardTitle>
+                        <CardTitle>Welcome to W.Chloe Limited</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-muted-foreground">
