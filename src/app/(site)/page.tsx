@@ -6,6 +6,15 @@ import { Button } from '@/components/ui/button';
 import { ArtistCard } from '@/components/shared/ArtistCard';
 import { EventCard } from '@/components/shared/EventCard';
 import { ArrowRight } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
+import Autoplay from "embla-carousel-autoplay"
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'event-banner-1');
@@ -17,7 +26,7 @@ export default function Home() {
         <section className="relative h-[60vh] flex items-center justify-center text-center text-white">
           <div className="absolute inset-0 bg-black/60 z-10" />
           <video
-            src="https://videos.pexels.com/video-files/3209828/3209828-hd_1280_720_30fps.mp4"
+            src="https://videos.pexels.com/video-files/853877/853877-hd_1280_720_25fps.mp4"
             autoPlay
             loop
             muted
@@ -75,15 +84,36 @@ export default function Home() {
         <section className="py-16 md:py-24 bg-background">
           <div className="container px-4">
             <h2 className="text-3xl font-bold text-center font-headline mb-12">Our Partners & Sponsors</h2>
-            <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4">
-              {partners.map((partner) => (
-                <div key={partner.id} className="text-center">
-                  <p className="font-semibold text-muted-foreground transition-colors hover:text-foreground">
-                    {partner.name}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              plugins={[
+                Autoplay({
+                  delay: 2000,
+                }),
+              ]}
+              className="w-full max-w-4xl mx-auto"
+            >
+              <CarouselContent>
+                {partners.map((partner) => (
+                  <CarouselItem key={partner.id} className="md:basis-1/2 lg:basis-1/4">
+                    <div className="p-1">
+                      <Card>
+                        <CardContent className="flex items-center justify-center p-6 h-24">
+                          <p className="font-semibold text-center text-muted-foreground">
+                            {partner.name}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
           </div>
         </section>
       </main>
