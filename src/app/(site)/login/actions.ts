@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 import { getSdks, initializeFirebase } from '@/firebase';
-import { initiateEmailSignIn, initiateEmailSignUp } from '@/firebase/non-blocking-login';
+import { initiateEmailSignIn, initiateEmailSignUp, initiateGoogleSignIn } from '@/firebase/non-blocking-login';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -79,6 +79,19 @@ export async function handleSignup(prevState: FormState, formData: FormData): Pr
     return {
       success: true,
       message: 'Signup successful! Please log in.',
+    };
+  } catch (error) {
+    return handleAuthError(error);
+  }
+}
+
+export async function handleGoogleLogin(): Promise<FormState> {
+  try {
+    const { auth } = getSdks(initializeFirebase().firebaseApp);
+    initiateGoogleSignIn(auth);
+    return {
+      success: true,
+      message: 'Google Sign-In initiated.',
     };
   } catch (error) {
     return handleAuthError(error);

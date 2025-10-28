@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormState, useFormStatus } from 'react-dom';
-import { handleLogin, handleSignup } from './actions';
+import { handleLogin, handleSignup, handleGoogleLogin } from './actions';
 import { useAuth } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -11,6 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
+import { GoogleIcon } from '@/components/icons/GoogleIcon';
+import { Separator } from '@/components/ui/separator';
 
 const initialState = {
   message: '',
@@ -83,17 +85,30 @@ export default function LoginPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form action={loginAction} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" name="email" type="email" placeholder="m@example.com" required />
+              <div className="space-y-4">
+                 <form action={handleGoogleLogin}>
+                  <Button variant="outline" className="w-full">
+                    <GoogleIcon className="mr-2 h-4 w-4" />
+                    Sign in with Google
+                  </Button>
+                </form>
+                <div className="flex items-center gap-4">
+                  <Separator className="flex-1" />
+                  <span className="text-xs text-muted-foreground">OR</span>
+                  <Separator className="flex-1" />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input id="password" name="password" type="password" required />
-                </div>
-                <SubmitButton text="Login" />
-              </form>
+                <form action={loginAction} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" name="email" type="email" placeholder="m@example.com" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input id="password" name="password" type="password" required />
+                  </div>
+                  <SubmitButton text="Login" />
+                </form>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -106,17 +121,30 @@ export default function LoginPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form action={signupAction} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
-                  <Input id="signup-email" name="email" type="email" placeholder="m@example.com" required />
+              <div className="space-y-4">
+                <form action={handleGoogleLogin}>
+                  <Button variant="outline" className="w-full">
+                    <GoogleIcon className="mr-2 h-4 w-4" />
+                     Sign up with Google
+                  </Button>
+                </form>
+                <div className="flex items-center gap-4">
+                  <Separator className="flex-1" />
+                  <span className="text-xs text-muted-foreground">OR</span>
+                  <Separator className="flex-1" />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-password">Password</Label>
-                  <Input id="signup-password" name="password" type="password" required />
-                </div>
-                <SubmitButton text="Sign Up" />
-              </form>
+                <form action={signupAction} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-email">Email</Label>
+                    <Input id="signup-email" name="email" type="email" placeholder="m@example.com" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-password">Password</Label>
+                    <Input id="signup-password" name="password" type="password" required />
+                  </div>
+                  <SubmitButton text="Sign Up" />
+                </form>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
