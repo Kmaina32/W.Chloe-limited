@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Calendar, Handshake, LayoutDashboard, Building2, Sparkles, Users } from 'lucide-react';
+import { Calendar, Handshake, LayoutDashboard, Sparkles, Users } from 'lucide-react';
 
 import {
   SidebarProvider,
@@ -16,62 +16,6 @@ import {
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-
-const AdminSidebar = () => {
-  const pathname = usePathname();
-
-  const menuItems = [
-    { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/admin/artists', label: 'Artists', icon: Users },
-    { href: '/admin/events', label: 'Events', icon: Calendar },
-    { href: '/admin/partners', label: 'Partners', icon: Handshake },
-    { href: '/admin/content-curation', label: 'Content Curation', icon: Sparkles, isAccent: true },
-  ];
-
-  return (
-    <SidebarProvider>
-      <Sidebar>
-        <SidebarHeader>
-          <Link href="/admin" className="flex items-center">
-            <div className="bg-white rounded-md px-3 py-1">
-                <span className="font-bold font-headline text-lg text-black">W.Chloe Limited</span>
-            </div>
-          </Link>
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarMenu>
-            {menuItems.map(({ href, label, icon: Icon, isAccent }) => (
-              <SidebarMenuItem key={href}>
-                <Link href={href} legacyBehavior passHref>
-                  <SidebarMenuButton
-                    isActive={pathname === href}
-                    className={cn(isAccent && 'text-accent hover:bg-accent hover:text-accent-foreground data-[active=true]:bg-accent data-[active=true]:text-accent-foreground')}
-                  >
-                    <Icon className="size-4" />
-                    <span>{label}</span>
-                  </SidebarMenuButton>
-                </Link>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarContent>
-      </Sidebar>
-      <SidebarInset>
-        <div className="p-4 md:p-6">
-          <Button asChild variant="outline" className="mb-4">
-             <Link href="/">Back to Site</Link>
-          </Button>
-          {/* Main Content Area */}
-          <div className="bg-card p-6 rounded-lg shadow-md">
-            {/* The page content will be rendered here */}
-            {/* @ts-ignore */}
-            {children}
-          </div>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
-  );
-};
 
 export default function AdminLayout({
   children,
@@ -121,15 +65,16 @@ const AdminNav = () => {
         <SidebarMenu>
             {menuItems.map(({ href, label, icon: Icon, isAccent }) => (
               <SidebarMenuItem key={href}>
-                <Link href={href} legacyBehavior passHref>
-                  <SidebarMenuButton
-                    isActive={pathname.startsWith(href) && (href !== '/admin' || pathname === '/admin')}
-                    className={cn(isAccent && 'text-accent hover:bg-accent hover:text-accent-foreground data-[active=true]:bg-accent data-[active=true]:text-accent-foreground')}
-                  >
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname.startsWith(href) && (href !== '/admin' || pathname === '/admin')}
+                  className={cn(isAccent && 'text-accent hover:bg-accent hover:text-accent-foreground data-[active=true]:bg-accent data-[active=true]:text-accent-foreground')}
+                >
+                  <Link href={href}>
                     <Icon className="size-4" />
                     <span>{label}</span>
-                  </SidebarMenuButton>
-                </Link>
+                  </Link>
+                </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
         </SidebarMenu>
