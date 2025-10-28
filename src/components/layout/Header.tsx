@@ -13,6 +13,7 @@ const navLinks = [
   { href: '/artists', label: 'Artists' },
   { href: '/events', label: 'Events' },
   { href: '/partners', label: 'Partners' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 const Header = () => {
