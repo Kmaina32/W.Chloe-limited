@@ -1,11 +1,17 @@
 'use client';
 
-import { useActionState, useState } from 'react';
-import { useFormStatus } from 'react-dom';
-import { handleLogin, handleSignup, handleGoogleLogin } from './actions';
-import { useUser, initializeFirebase } from '@/firebase';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useUser, initializeFirebase } from '@/firebase';
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  GoogleAuthProvider,
+  signInWithRedirect,
+} from 'firebase/auth';
+import { createUserProfile } from './actions';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -14,29 +20,40 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { GoogleIcon } from '@/components/icons/GoogleIcon';
 import { Separator } from '@/components/ui/separator';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
-const initialState = {
-  message: '',
-  success: false,
-};
-
-function SubmitButton({ text }: { text: string }) {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" disabled={pending} className="w-full">
-      {pending ? 'Processing...' : text}
-    </Button>
-  );
+function handleAuthError(error: any): { message: string } {
+  if (typeof error === 'object' && error !== null && 'code' in error) {
+    switch (error.code) {
+      case 'auth/user-not-found':
+      case 'auth/wrong-password':
+      case 'auth/invalid-credential':
+        return { message: 'Invalid credentials. Please try again.' };
+      case 'auth/email-already-in-use':
+        return { message: 'This email is already registered.' };
+      case 'auth/weak-password':
+        return { message: 'The password is too weak. Please use at least 6 characters.' };
+      case 'auth/invalid-email':
+        return { message: 'The email address is not valid.' };
+      case 'auth/operation-not-allowed':
+        return { message: 'Email/password accounts are not enabled.' };
+      default:
+        return { message: `An unexpected authentication error occurred: ${error.code}` };
+    }
+  }
+  return { message: error.message || 'An unknown error occurred.' };
 }
 
 export default function LoginPage() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const { toast } = useToast();
+  const { auth } = initializeFirebase();
 
-  const [loginState, loginAction] = useActionState(handleLogin, initialState);
-  const [signupState, signupAction] = useActionState(handleSignup, initialState);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
+  const [pending, setPending] = useState(false);
 
   useEffect(() => {
     if (user && !isUserLoading) {
@@ -44,26 +61,74 @@ export default function LoginPage() {
     }
   }, [user, isUserLoading, router]);
 
-  useEffect(() => {
-    if (loginState.message) {
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPending(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       toast({
-        title: loginState.success ? 'Success' : 'Error',
-        description: loginState.message,
-        variant: loginState.success ? 'default' : 'destructive',
+        title: 'Success',
+        description: 'Login successful! Redirecting...',
       });
-    }
-  }, [loginState, toast]);
-
-  useEffect(() => {
-    if (signupState.message) {
+      // The onAuthStateChanged listener will handle the redirect.
+    } catch (error) {
+      const { message } = handleAuthError(error);
       toast({
-        title: signupState.success ? 'Success' : 'Error',
-        description: signupState.message,
-        variant: signupState.success ? 'default' : 'destructive',
+        title: 'Error',
+        description: message,
+        variant: 'destructive',
       });
+    } finally {
+      setPending(false);
     }
-  }, [signupState, toast]);
+  };
 
+  const handleEmailSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPending(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, signupEmail, signupPassword);
+      const user = userCredential.user;
+
+      const displayName = user.displayName || signupEmail.split('@')[0];
+      await updateProfile(user, { displayName });
+
+      // Call the server action to create the Firestore document.
+      await createUserProfile({ ...user, displayName });
+
+      toast({
+        title: 'Success',
+        description: 'Signup successful! You are now logged in.',
+      });
+      // The onAuthStateChanged listener will handle the redirect.
+    } catch (error) {
+      const { message } = handleAuthError(error);
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive',
+      });
+    } finally {
+      setPending(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setPending(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithRedirect(auth, provider);
+      // Firebase will handle the redirect and onAuthStateChanged will pick up the result.
+    } catch (error) {
+      const { message } = handleAuthError(error);
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive',
+      });
+      setPending(false);
+    }
+  };
 
   if (isUserLoading || user) {
     return (
@@ -90,27 +155,27 @@ export default function LoginPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                 <form action={() => handleGoogleLogin()}>
-                  <Button variant="outline" className="w-full" type="submit">
+                 <Button variant="outline" className="w-full" onClick={handleGoogleLogin} disabled={pending}>
                     <GoogleIcon className="mr-2 h-4 w-4" />
-                    Sign in with Google
+                    {pending ? 'Redirecting...' : 'Sign in with Google'}
                   </Button>
-                </form>
                 <div className="flex items-center gap-4">
                   <Separator className="flex-1" />
                   <span className="text-xs text-muted-foreground">OR</span>
                   <Separator className="flex-1" />
                 </div>
-                <form action={loginAction} className="space-y-4">
+                <form onSubmit={handleEmailLogin} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" type="email" placeholder="m@example.com" required />
+                    <Input id="email" name="email" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
-                    <Input id="password" name="password" type="password" required />
+                    <Input id="password" name="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
                   </div>
-                  <SubmitButton text="Login" />
+                   <Button type="submit" disabled={pending} className="w-full">
+                    {pending ? 'Processing...' : 'Login'}
+                  </Button>
                 </form>
               </div>
             </CardContent>
@@ -126,27 +191,27 @@ export default function LoginPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <form action={() => handleGoogleLogin()}>
-                  <Button variant="outline" className="w-full" type="submit">
+                  <Button variant="outline" className="w-full" onClick={handleGoogleLogin} disabled={pending}>
                     <GoogleIcon className="mr-2 h-4 w-4" />
-                     Sign up with Google
+                     {pending ? 'Redirecting...' : 'Sign up with Google'}
                   </Button>
-                </form>
                 <div className="flex items-center gap-4">
                   <Separator className="flex-1" />
                   <span className="text-xs text-muted-foreground">OR</span>
                   <Separator className="flex-1" />
                 </div>
-                <form action={signupAction} className="space-y-4">
+                <form onSubmit={handleEmailSignup} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>
-                    <Input id="signup-email" name="email" type="email" placeholder="m@example.com" required />
+                    <Input id="signup-email" name="email" type="email" placeholder="m@example.com" required value={signupEmail} onChange={(e) => setSignupEmail(e.target.value)} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-password">Password</Label>
-                    <Input id="signup-password" name="password" type="password" required />
+                    <Input id="signup-password" name="password" type="password" required value={signupPassword} onChange={(e) => setSignupPassword(e.target.value)} />
                   </div>
-                  <SubmitButton text="Sign Up" />
+                   <Button type="submit" disabled={pending} className="w-full">
+                    {pending ? 'Processing...' : 'Sign Up'}
+                  </Button>
                 </form>
               </div>
             </CardContent>
