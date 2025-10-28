@@ -93,6 +93,14 @@ export const partners = [
   { id: '3', name: 'Boomplay', logoUrl: findImage('partner-3'), imageHint: 'radio logo' },
   { id: '4', name: 'Mdundo', logoUrl: findImage('partner-4'), imageHint: 'label logo' },
   { id: '5', name: 'Afrochella', logoUrl: findImage('partner-5'), imageHint: 'festival logo' },
+  { id: '6', name: 'Universal Music Group', logoUrl: findImage('partner-universal'), imageHint: 'music logo' },
+  { id: '7', name: 'Sony Music Entertainment', logoUrl: findImage('partner-sony'), imageHint: 'media logo' },
+  { id: '8', name: 'Warner Music Group', logoUrl: findImage('partner-warner'), imageHint: 'record logo' },
+  { id: '9', name: 'Mavin Records', logoUrl: findImage('partner-mavin'), imageHint: 'african music' },
+  { id: '10', name: 'Gallo Record Company', logoUrl: findImage('partner-gallo'), imageHint: 'retro logo' },
+  { id: '11', name: 'Chocolate City', logoUrl: findImage('partner-chocolate-city'), imageHint: 'urban logo' },
+  { id: '12', name: 'Effyzzie Music Group', logoUrl: findImage('partner-effyzzie'), imageHint: 'creative logo' },
+  { id: '13', name: 'WCB Wasafi', logoUrl: findImage('partner-wcb'), imageHint: 'diamond logo' },
 ];
 
 export type Artist = typeof artists[0];

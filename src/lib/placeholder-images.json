@@ -71,6 +71,54 @@
       "description": "Crowd at a music festival at night",
       "imageUrl": "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtdXNpYyUyMGZlc3RpdmFsfGVufDB8fHx8MTc2MTY0NDY5NXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "music festival"
+    },
+    {
+      "id": "partner-universal",
+      "description": "Logo for Universal Music Group",
+      "imageUrl": "https://images.unsplash.com/photo-1509897693578-e9237fb35e3f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtdXNpYyUyMGxvZ298ZW58MHx8fHwxNzYxNTc5NDU2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "music logo"
+    },
+    {
+      "id": "partner-sony",
+      "description": "Logo for Sony Music Entertainment",
+      "imageUrl": "https://images.unsplash.com/photo-1761044590687-29916cbe4203?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtZWRpYSUyMGxvZ298ZW58MHx8fHwxNzYxNjU0MTgyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "media logo"
+    },
+    {
+      "id": "partner-warner",
+      "description": "Logo for Warner Music Group",
+      "imageUrl": "https://images.unsplash.com/photo-1645400975800-d3c387cb7fbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxyZWNvcmQlMjBsb2dvfGVufDB8fHx8MTc2MTY1NjUzNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "record logo"
+    },
+    {
+      "id": "partner-mavin",
+      "description": "Logo for Mavin Records",
+      "imageUrl": "https://images.unsplash.com/photo-1530917203633-106d4a1a0967?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhZnJpY2FuJTIwbXVzaWN8ZW58MHx8fHwxNzYxNjU2NTM2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "african music"
+    },
+    {
+      "id": "partner-gallo",
+      "description": "Logo for Gallo Record Company",
+      "imageUrl": "https://images.unsplash.com/photo-1722519144732-a87318a92052?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxyZXRybyUyMGxvZ298ZW58MHx8fHwxNzYxNjEyNDI3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "retro logo"
+    },
+    {
+      "id": "partner-chocolate-city",
+      "description": "Logo for Chocolate City",
+      "imageUrl": "https://images.unsplash.com/photo-1649261394567-d4b58da4465d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx1cmJhbiUyMGxvZ298ZW58MHx8fHwxNzYxNjU2NTM2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "urban logo"
+    },
+    {
+      "id": "partner-effyzzie",
+      "description": "Logo for Effyzzie Music Group",
+      "imageUrl": "https://images.unsplash.com/photo-1761223956849-c6912f2179aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjcmVhdGl2ZSUyMGxvZ298ZW58MHx8fHwxNzYxNTM2NTc3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "creative logo"
+    },
+    {
+      "id": "partner-wcb",
+      "description": "Logo for WCB Wasafi",
+      "imageUrl": "https://images.unsplash.com/photo-1691405152460-82df81ce2955?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkaWFtb25kJTIwbG9nb3xlbnwwfHx8fDE3NjE2NTY1Mzd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "diamond logo"
     }
   ]
 }
