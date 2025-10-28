@@ -3,7 +3,6 @@
 import { z } from 'zod';
 import { getSdks, initializeFirebase } from '@/firebase';
 import { initiateEmailSignIn, initiateEmailSignUp } from '@/firebase/non-blocking-login';
-import { AuthError } from 'firebase/auth';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -15,8 +14,10 @@ export type FormState = {
   success: boolean;
 };
 
-function handleAuthError(error: unknown): FormState {
-  if (error instanceof AuthError) {
+function handleAuthError(error: any): FormState {
+  // Firebase auth errors have a 'code' property.
+  // We check if the error is an object and has this property.
+  if (typeof error === 'object' && error !== null && 'code' in error) {
     switch (error.code) {
       case 'auth/user-not-found':
         return { success: false, message: 'No user found with this email.' };
@@ -26,10 +27,13 @@ function handleAuthError(error: unknown): FormState {
         return { success: false, message: 'This email is already in use.' };
       case 'auth/weak-password':
         return { success: false, message: 'The password is too weak.' };
+      case 'auth/invalid-email':
+          return { success: false, message: 'The email address is not valid.' };
       default:
         return { success: false, message: 'An unexpected error occurred. Please try again.' };
     }
   }
+  // Fallback for non-Firebase errors
   return { success: false, message: 'An unknown error occurred.' };
 }
 
