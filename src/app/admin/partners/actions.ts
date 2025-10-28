@@ -3,14 +3,12 @@
 import { z } from 'zod';
 import { addDocumentNonBlocking, setDocumentNonBlocking } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
-import { getSdks } from '@/firebase';
-import { initializeFirebase } from '@/firebase';
+import { getSdks, initializeFirebase } from '@/firebase';
 
-const artistSchema = z.object({
+const partnerSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
-  genre: z.string().min(2, { message: 'Genre must be at least 2 characters.' }),
-  country: z.string().min(2, { message: 'Country must be at least 2 characters.' }),
-  imageUrl: z.string().url({ message: 'Please enter a valid image URL.' }),
+  logoUrl: z.string().url({ message: 'Please enter a valid logo URL.' }),
+  websiteURL: z.string().url({ message: 'Please enter a valid website URL.' }).optional(),
   description: z.string().optional(),
 });
 
@@ -21,11 +19,11 @@ export type FormState = {
   issues?: string[];
 };
 
-export async function addArtist(
+export async function addPartner(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  const validatedFields = artistSchema.safeParse(Object.fromEntries(formData.entries()));
+  const validatedFields = partnerSchema.safeParse(Object.fromEntries(formData.entries()));
 
   if (!validatedFields.success) {
     const { errors } = validatedFields.error;
@@ -39,36 +37,36 @@ export async function addArtist(
 
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
-    const artistsCollection = collection(firestore, 'artists');
-    await addDocumentNonBlocking(artistsCollection, validatedFields.data);
+    const partnersCollection = collection(firestore, 'partners');
+    await addDocumentNonBlocking(partnersCollection, validatedFields.data);
     
     return {
       success: true,
-      message: 'Artist added successfully!',
+      message: 'Partner added successfully!',
     };
   } catch (error) {
     console.error(error);
     return {
       success: false,
-      message: 'Failed to add artist. Please try again.',
+      message: 'Failed to add partner. Please try again.',
       fields: Object.fromEntries(formData.entries()),
     };
   }
 }
 
-export async function editArtist(
-  artistId: string,
+export async function editPartner(
+  partnerId: string,
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  if (!artistId) {
+  if (!partnerId) {
     return {
       success: false,
-      message: 'Artist ID is missing.',
+      message: 'Partner ID is missing.',
     };
   }
   
-  const validatedFields = artistSchema.safeParse(Object.fromEntries(formData.entries()));
+  const validatedFields = partnerSchema.safeParse(Object.fromEntries(formData.entries()));
 
   if (!validatedFields.success) {
     const { errors } = validatedFields.error;
@@ -82,18 +80,18 @@ export async function editArtist(
 
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
-    const artistDocRef = doc(firestore, 'artists', artistId);
-    await setDocumentNonBlocking(artistDocRef, validatedFields.data, { merge: true });
+    const partnerDocRef = doc(firestore, 'partners', partnerId);
+    await setDocumentNonBlocking(partnerDocRef, validatedFields.data, { merge: true });
     
     return {
       success: true,
-      message: 'Artist updated successfully!',
+      message: 'Partner updated successfully!',
     };
   } catch (error) {
     console.error(error);
     return {
       success: false,
-      message: 'Failed to update artist. Please try again.',
+      message: 'Failed to update partner. Please try again.',
       fields: Object.fromEntries(formData.entries()),
     };
   }

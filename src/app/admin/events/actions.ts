@@ -3,15 +3,14 @@
 import { z } from 'zod';
 import { addDocumentNonBlocking, setDocumentNonBlocking } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
-import { getSdks } from '@/firebase';
-import { initializeFirebase } from '@/firebase';
+import { getSdks, initializeFirebase } from '@/firebase';
 
-const artistSchema = z.object({
+const eventSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
-  genre: z.string().min(2, { message: 'Genre must be at least 2 characters.' }),
-  country: z.string().min(2, { message: 'Country must be at least 2 characters.' }),
-  imageUrl: z.string().url({ message: 'Please enter a valid image URL.' }),
+  date: z.string().refine((val) => !isNaN(Date.parse(val)), { message: 'Invalid date format.' }),
+  location: z.string().min(2, { message: 'Location must be at least 2 characters.' }),
   description: z.string().optional(),
+  imageURL: z.string().url({ message: 'Please enter a valid image URL.' }).optional(),
 });
 
 export type FormState = {
@@ -21,11 +20,11 @@ export type FormState = {
   issues?: string[];
 };
 
-export async function addArtist(
+export async function addEvent(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  const validatedFields = artistSchema.safeParse(Object.fromEntries(formData.entries()));
+  const validatedFields = eventSchema.safeParse(Object.fromEntries(formData.entries()));
 
   if (!validatedFields.success) {
     const { errors } = validatedFields.error;
@@ -39,36 +38,36 @@ export async function addArtist(
 
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
-    const artistsCollection = collection(firestore, 'artists');
-    await addDocumentNonBlocking(artistsCollection, validatedFields.data);
+    const eventsCollection = collection(firestore, 'events');
+    await addDocumentNonBlocking(eventsCollection, validatedFields.data);
     
     return {
       success: true,
-      message: 'Artist added successfully!',
+      message: 'Event added successfully!',
     };
   } catch (error) {
     console.error(error);
     return {
       success: false,
-      message: 'Failed to add artist. Please try again.',
+      message: 'Failed to add event. Please try again.',
       fields: Object.fromEntries(formData.entries()),
     };
   }
 }
 
-export async function editArtist(
-  artistId: string,
+export async function editEvent(
+  eventId: string,
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  if (!artistId) {
+  if (!eventId) {
     return {
       success: false,
-      message: 'Artist ID is missing.',
+      message: 'Event ID is missing.',
     };
   }
   
-  const validatedFields = artistSchema.safeParse(Object.fromEntries(formData.entries()));
+  const validatedFields = eventSchema.safeParse(Object.fromEntries(formData.entries()));
 
   if (!validatedFields.success) {
     const { errors } = validatedFields.error;
@@ -82,18 +81,18 @@ export async function editArtist(
 
   try {
     const { firestore } = getSdks(initializeFirebase().firebaseApp);
-    const artistDocRef = doc(firestore, 'artists', artistId);
-    await setDocumentNonBlocking(artistDocRef, validatedFields.data, { merge: true });
+    const eventDocRef = doc(firestore, 'events', eventId);
+    await setDocumentNonBlocking(eventDocRef, validatedFields.data, { merge: true });
     
     return {
       success: true,
-      message: 'Artist updated successfully!',
+      message: 'Event updated successfully!',
     };
   } catch (error) {
     console.error(error);
     return {
       success: false,
-      message: 'Failed to update artist. Please try again.',
+      message: 'Failed to update event. Please try again.',
       fields: Object.fromEntries(formData.entries()),
     };
   }
