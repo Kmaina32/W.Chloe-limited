@@ -32,9 +32,10 @@ const AdminSidebar = () => {
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <Link href="/admin" className="flex items-center gap-2">
-            <Building2 className="h-6 w-6 text-primary" />
-            <span className="font-bold font-headline text-lg text-sidebar-foreground">W.Chloe Limited</span>
+          <Link href="/admin" className="flex items-center">
+            <div className="bg-white rounded-md px-3 py-1">
+                <span className="font-bold font-headline text-lg text-black">W.Chloe Limited</span>
+            </div>
           </Link>
         </SidebarHeader>
         <SidebarContent>
@@ -81,9 +82,10 @@ export default function AdminLayout({
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <Link href="/admin" className="flex items-center gap-2">
-            <Building2 className="h-6 w-6 text-primary" />
-            <span className="font-bold font-headline text-lg text-sidebar-foreground">W.Chloe Limited</span>
+          <Link href="/admin" className="flex items-center">
+             <div className="bg-white rounded-md px-3 py-1">
+                <span className="font-bold font-headline text-lg text-black">W.Chloe Limited</span>
+            </div>
           </Link>
         </SidebarHeader>
         <SidebarContent>
