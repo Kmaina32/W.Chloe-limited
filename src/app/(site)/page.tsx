@@ -32,7 +32,7 @@ export default function Home() {
               A digital platform for managing artists, actors, and DJs — inspired by Africa’s creative energy.
             </p>
             <Button size="lg" className="mt-8 bg-accent text-accent-foreground hover:bg-accent/90" asChild>
-              <Link href="#">Join the Movement <ArrowRight className="ml-2 h-5 w-5" /></Link>
+              <Link href="/login">Join the Movement <ArrowRight className="ml-2 h-5 w-5" /></Link>
             </Button>
           </div>
         </section>
