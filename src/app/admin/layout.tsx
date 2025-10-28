@@ -33,12 +33,12 @@ export default function AdminLayout({
   }, []);
 
   useEffect(() => {
-    if (!isUserLoading && !user) {
+    if (isClient && !isUserLoading && !user) {
       router.push('/login');
     }
-  }, [isUserLoading, user, router]);
+  }, [isUserLoading, user, router, isClient]);
 
-  if (isUserLoading || !user || !isClient) {
+  if (!isClient || isUserLoading || !user) {
     return (
       <div className="flex items-center justify-center h-screen">
         <p>Loading admin dashboard...</p>
@@ -48,7 +48,7 @@ export default function AdminLayout({
 
   return (
     <SidebarProvider>
-      <Sidebar>
+      <Sidebar side="right">
         <SidebarHeader>
           <Link href="/admin" className="flex items-center">
              <div className="bg-white rounded-md px-3 py-1">
