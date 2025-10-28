@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { handleLogin, handleSignup, handleGoogleLogin } from './actions';
 import { useAuth } from '@/firebase';
 import { useRouter } from 'next/navigation';
@@ -29,8 +30,8 @@ function SubmitButton({ text }: { text: string }) {
 }
 
 export default function LoginPage() {
-  const [loginState, loginAction] = useFormState(handleLogin, initialState);
-  const [signupState, signupAction] = useFormState(handleSignup, initialState);
+  const [loginState, loginAction] = useActionState(handleLogin, initialState);
+  const [signupState, signupAction] = useActionState(handleSignup, initialState);
   const { user, isUserLoading } = useAuth();
   const router = useRouter();
   const { toast } = useToast();

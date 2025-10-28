@@ -1,7 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
-import { useEffect } from 'react';
+import { useActionState, useEffect } from 'react';
+import { useFormStatus } from 'react-dom';
 import { useToast } from '@/hooks/use-toast';
 import { handleGenerateContent, type FormState } from '../actions';
 import { Button } from '@/components/ui/button';
@@ -44,7 +44,7 @@ function CopyButton({ textToCopy }: { textToCopy: string }) {
 }
 
 export default function ContentCurationForm() {
-  const [state, formAction] = useFormState(handleGenerateContent, initialState);
+  const [state, formAction] = useActionState(handleGenerateContent, initialState);
   const { toast } = useToast();
 
   useEffect(() => {
