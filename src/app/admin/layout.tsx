@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Calendar, Handshake, LayoutDashboard, Sparkles, Users } from 'lucide-react';
+import { Calendar, Handshake, LayoutDashboard, Sparkles, Users, Users2 } from 'lucide-react';
 
 import {
   SidebarProvider,
@@ -58,6 +58,7 @@ const AdminNav = () => {
         { href: '/admin/artists', label: 'Artists', icon: Users },
         { href: '/admin/events', label: 'Events', icon: Calendar },
         { href: '/admin/partners', label: 'Partners', icon: Handshake },
+        { href: '/admin/users', label: 'Users', icon: Users2 },
         { href: '/admin/content-curation', label: 'Content Curation', icon: Sparkles, isAccent: true },
       ];
 

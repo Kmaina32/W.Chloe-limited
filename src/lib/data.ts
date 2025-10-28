@@ -130,3 +130,10 @@ export const partners = [
 export type Artist = (typeof artists)[0];
 export type Event = (typeof events)[0];
 export type Partner = (typeof partners)[0];
+export type UserProfile = {
+  id: string;
+  uid: string;
+  email: string;
+  displayName: string | null;
+  photoURL: string | null;
+};

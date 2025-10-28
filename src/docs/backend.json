@@ -1,0 +1,245 @@
+{
+  "entities": {
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User Profile",
+      "type": "object",
+      "description": "Represents a user's public profile.",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The user's unique ID."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's email address."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The user's display name."
+        },
+        "photoURL": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the user's profile picture."
+        }
+      },
+      "required": [
+        "uid",
+        "email"
+      ]
+    },
+    "Artist": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Artist",
+      "type": "object",
+      "description": "Represents an artist, actor, or DJ profile.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the artist."
+        },
+        "genre": {
+          "type": "string",
+          "description": "The genre of music or performance the artist specializes in."
+        },
+        "country": {
+          "type": "string",
+          "description": "The country the artist is from."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the artist's profile image.",
+          "format": "uri"
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the artist."
+        },
+        "socialMediaLinks": {
+          "type": "array",
+          "description": "Array of social media links for the artist",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "genre",
+        "country",
+        "imageUrl"
+      ]
+    },
+    "Event": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Event",
+      "type": "object",
+      "description": "Represents an event featuring artists.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the event."
+        },
+        "date": {
+          "type": "string",
+          "description": "The date and time of the event.",
+          "format": "date-time"
+        },
+        "location": {
+          "type": "string",
+          "description": "The location of the event."
+        },
+        "artistIds": {
+          "type": "array",
+          "description": "References to Artists. (Relationship: Event N:N Artist)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the event."
+        },
+        "imageURL": {
+          "type": "string",
+          "description": "URL of the event's promotional image.",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "name",
+        "date",
+        "location"
+      ]
+    },
+    "Partner": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Partner",
+      "type": "object",
+      "description": "Represents a partner or sponsor of the platform.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the partner organization."
+        },
+        "logoUrl": {
+          "type": "string",
+          "description": "URL of the partner's logo.",
+          "format": "uri"
+        },
+        "websiteURL": {
+          "type": "string",
+          "description": "URL of the partner's website.",
+          "format": "uri"
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the partner and their relationship with the platform."
+        }
+      },
+      "required": [
+        "name",
+        "logoUrl"
+      ]
+    },
+    "Admin": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Admin",
+      "type": "object",
+      "description": "Represents an administrator user with access to the admin panel. Extends UserProfile.",
+      "allOf": [
+        {
+          "$ref": "#/entities/UserProfile"
+        }
+      ]
+    },
+    "Content": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Content",
+      "type": "object",
+      "description": "Represents curated content managed by the admin, to be displayed across the platform.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the content item.",
+          "format": "uuid"
+        },
+        "contentType": {
+          "type": "string",
+          "description": "The type of content (e.g., 'Hero Section', 'Featured Artist', 'Latest Event', 'Partner Showcase')."
+        },
+        "contentData": {
+          "type": "string",
+          "description": "A JSON string containing the actual content data, specific to the contentType."
+        },
+        "pageLocation": {
+          "type": "string",
+          "description": "The page where this content is displayed (e.g., 'Home', 'Artists', 'Events', 'Partners')."
+        },
+        "order": {
+          "type": "number",
+          "description": "The order in which this content is displayed on the page."
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "A flag indicating whether the content is currently active and visible on the platform."
+        }
+      },
+      "required": [
+        "id",
+        "contentType",
+        "contentData",
+        "pageLocation",
+        "order",
+        "isActive"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous",
+      "google"
+    ]
+  },
+  "firestore": {
+    "/admins/{adminId}": {
+      "schema": {
+        "$ref": "#/entities/Admin"
+      },
+      "description": "Collection of administrator user IDs. Existence of a document with the user's ID grants admin privileges."
+    },
+    "/artists/{artistId}": {
+      "schema": {
+        "$ref": "#/entities/Artist"
+      },
+      "description": "Collection of artist profiles. Accessible and manageable by admins."
+    },
+    "/events/{eventId}": {
+      "schema": {
+        "$ref": "#/entities/Event"
+      },
+      "description": "Collection of event listings. Accessible and manageable by admins."
+    },
+    "/partners/{partnerId}": {
+      "schema": {
+        "$ref": "#/entities/Partner"
+      },
+      "description": "Collection of partner profiles. Accessible and manageable by admins."
+    },
+    "/content/{contentId}": {
+      "schema": {
+        "$ref": "#/entities/Content"
+      },
+      "description": "Collection of curated content items. Accessible and manageable by admins."
+    },
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserProfile"
+      },
+      "description": "Collection of all user profiles. A document is created here upon user registration."
+    }
+  }
+}

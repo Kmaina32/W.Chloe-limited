@@ -7,7 +7,9 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithRedirect,
+  updateProfile,
 } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -38,6 +40,18 @@ function handleAuthError(error: any): FormState {
     }
   }
   return { success: false, message: error.message || 'An unknown error occurred.' };
+}
+
+async function createUserProfile(user: import('firebase/auth').User) {
+  const { firestore } = getSdks(initializeFirebase().firebaseApp);
+  const userDocRef = doc(firestore, 'users', user.uid);
+  const userProfile = {
+    uid: user.uid,
+    email: user.email,
+    displayName: user.displayName,
+    photoURL: user.photoURL,
+  };
+  await setDoc(userDocRef, userProfile, { merge: true });
 }
 
 export async function handleLogin(prevState: FormState, formData: FormData): Promise<FormState> {
@@ -76,7 +90,16 @@ export async function handleSignup(prevState: FormState, formData: FormData): Pr
 
   try {
     const { auth } = getSdks(initializeFirebase().firebaseApp);
-    await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // Set a default display name if not available
+    const displayName = user.displayName || email.split('@')[0];
+    await updateProfile(user, { displayName });
+
+    // Create user profile in Firestore
+    await createUserProfile({ ...user, displayName });
+
     return {
       success: true,
       message: 'Signup successful! You are now logged in.',
@@ -93,6 +116,7 @@ export async function handleGoogleLogin(): Promise<void> {
     const { auth } = getSdks(initializeFirebase().firebaseApp);
     const provider = new GoogleAuthProvider();
     await signInWithRedirect(auth, provider);
+    // After redirect, an onAuthStateChanged listener elsewhere should handle profile creation.
   } catch (error) {
     // This error will likely not be seen by the user due to the redirect,
     // but it's good practice to handle it.
