@@ -3,8 +3,10 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { artists, events, partners } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMemo } from 'react';
+import { useFirestore, useCollection } from '@/firebase';
+import { collection, query, orderBy, limit } from 'firebase/firestore';
+import type { Artist, Event, Partner } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { ArtistCard } from '@/components/shared/ArtistCard';
 import { EventCard } from '@/components/shared/EventCard';
@@ -18,9 +20,29 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import Autoplay from "embla-carousel-autoplay"
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Home() {
-  const heroImage = PlaceHolderImages.find((img) => img.id === 'event-banner-1');
+  const firestore = useFirestore();
+
+  const artistsQuery = useMemo(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'artists'), orderBy('name', 'asc'), limit(4));
+  }, [firestore]);
+
+  const eventsQuery = useMemo(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'events'), orderBy('date', 'desc'), limit(4));
+  }, [firestore]);
+  
+  const partnersQuery = useMemo(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'partners'), orderBy('name', 'asc'));
+  }, [firestore]);
+
+  const { data: artists, isLoading: isLoadingArtists } = useCollection<Artist>(artistsQuery);
+  const { data: events, isLoading: isLoadingEvents } = useCollection<Event>(eventsQuery);
+  const { data: partners, isLoading: isLoadingPartners } = useCollection<Partner>(partnersQuery);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -53,7 +75,17 @@ export default function Home() {
           <div className="container px-4">
             <h2 className="text-3xl font-bold text-center font-headline mb-10">Featured Artists</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {artists.slice(0, 4).map((artist) => (
+              {isLoadingArtists && Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex flex-col space-y-3">
+                  <Skeleton className="h-[250px] w-full rounded-lg" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                </div>
+              ))}
+              {!isLoadingArtists && !artists?.length && <p className="col-span-full text-center">No artists to display.</p>}
+              {artists?.map((artist) => (
                 <ArtistCard key={artist.id} artist={artist} />
               ))}
             </div>
@@ -70,7 +102,16 @@ export default function Home() {
           <div className="container px-4">
             <h2 className="text-3xl font-bold text-center font-headline mb-10">Latest Events</h2>
             <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-              {events.slice(0, 4).map((event) => (
+              {isLoadingEvents && Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="flex flex-col space-y-3 p-4 border rounded-lg">
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-4 w-1/3" />
+                </div>
+              ))}
+              {!isLoadingEvents && !events?.length && <p className="col-span-full text-center">No events to display.</p>}
+              {events?.map((event) => (
                 <EventCard key={event.id} event={event} />
               ))}
             </div>
@@ -86,36 +127,38 @@ export default function Home() {
         <section className="py-16 md:py-24 bg-background">
           <div className="container px-4">
             <h2 className="text-3xl font-bold text-center font-headline mb-12">Our Partners & Sponsors</h2>
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-              plugins={[
-                Autoplay({
-                  delay: 2000,
-                }),
-              ]}
-              className="w-full max-w-4xl mx-auto"
-            >
-              <CarouselContent>
-                {partners.map((partner) => (
-                  <CarouselItem key={partner.id} className="md:basis-1/2 lg:basis-1/4">
-                    <div className="p-1">
-                      <Card>
-                        <CardContent className="flex items-center justify-center p-6 h-24">
-                          <p className="font-semibold text-center text-muted-foreground">
-                            {partner.name}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
+            {isLoadingPartners && <Skeleton className="h-24 w-full max-w-4xl mx-auto" />}
+            {partners && partners.length > 0 && (
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                plugins={[
+                  Autoplay({
+                    delay: 2000,
+                  }),
+                ]}
+                className="w-full max-w-4xl mx-auto"
+              >
+                <CarouselContent>
+                  {partners.map((partner) => (
+                    <CarouselItem key={partner.id} className="md:basis-1/2 lg:basis-1/4">
+                      <div className="p-1">
+                        <Card>
+                          <CardContent className="flex items-center justify-center p-6 h-24">
+                             <Image src={partner.logoUrl} alt={partner.name} width={100} height={40} className="object-contain" />
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+            )}
+             {!isLoadingPartners && !partners?.length && <p className="text-center">No partners to display.</p>}
           </div>
         </section>
       </main>

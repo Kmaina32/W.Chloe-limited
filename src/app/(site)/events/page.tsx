@@ -1,10 +1,27 @@
-import { events } from '@/lib/data';
+
+'use client';
+
+import { useMemo } from 'react';
+import { useFirestore, useCollection } from '@/firebase';
+import { collection, query, orderBy } from 'firebase/firestore';
+import type { Event } from '@/lib/data';
 import { EventCard } from '@/components/shared/EventCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
+
 
 export default function EventsPage() {
+  const firestore = useFirestore();
+
+  const eventsCollection = useMemo(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'events'), orderBy('date', 'desc'));
+  }, [firestore]);
+
+  const { data: events, isLoading } = useCollection<Event>(eventsCollection);
+
   return (
     <div className="container py-12">
       <div className="text-center mb-12">
@@ -42,7 +59,18 @@ export default function EventsPage() {
       </div>
       
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-        {events.map((event) => (
+        {isLoading && Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="flex flex-col space-y-3 p-4 border rounded-lg">
+            <Skeleton className="h-6 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+            <Skeleton className="h-4 w-1/2" />
+            <Skeleton className="h-4 w-1/3" />
+          </div>
+        ))}
+        {!isLoading && !events?.length && (
+          <p className="col-span-full text-center text-muted-foreground">No upcoming events found.</p>
+        )}
+        {events?.map((event) => (
           <EventCard key={event.id} event={event} />
         ))}
       </div>

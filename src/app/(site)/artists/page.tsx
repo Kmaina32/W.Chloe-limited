@@ -1,9 +1,25 @@
-import { artists } from '@/lib/data';
+
+'use client';
+
+import { useMemo } from 'react';
+import { useFirestore, useCollection } from '@/firebase';
+import { collection, query, orderBy } from 'firebase/firestore';
+import type { Artist } from '@/lib/data';
 import { ArtistCard } from '@/components/shared/ArtistCard';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ArtistsPage() {
+  const firestore = useFirestore();
+
+  const artistsCollection = useMemo(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'artists'), orderBy('name', 'asc'));
+  }, [firestore]);
+
+  const { data: artists, isLoading } = useCollection<Artist>(artistsCollection);
+
   return (
     <div className="container py-12">
       <div className="text-center mb-12">
@@ -21,7 +37,19 @@ export default function ArtistsPage() {
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {artists.map((artist) => (
+        {isLoading && Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="flex flex-col space-y-3">
+            <Skeleton className="h-[250px] w-full rounded-lg" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+          </div>
+        ))}
+        {!isLoading && !artists?.length && (
+          <p className="col-span-full text-center text-muted-foreground">No artists found.</p>
+        )}
+        {artists?.map((artist) => (
           <ArtistCard key={artist.id} artist={artist} />
         ))}
       </div>
