@@ -97,12 +97,19 @@ export default function AdminArtistsPage() {
                 </TableCell>
               </TableRow>
             )}
-            {!isLoading && artists?.length === 0 && (
+            {!isLoading && !artists && firestore && (
                 <TableRow>
                     <TableCell colSpan={5} className="h-24 text-center">
-                        No artists found. Get started by adding one.
+                       No artists found. Get started by adding one.
                     </TableCell>
                 </TableRow>
+            )}
+            {!isLoading && !firestore && (
+              <TableRow>
+                <TableCell colSpan={5} className="h-24 text-center">
+                  Connecting to the database...
+                </TableCell>
+              </TableRow>
             )}
             {artists?.map(artist => (
               <TableRow key={artist.id}>

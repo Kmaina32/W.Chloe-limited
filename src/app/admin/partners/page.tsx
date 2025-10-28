@@ -97,12 +97,19 @@ export default function AdminPartnersPage() {
                 </TableCell>
               </TableRow>
             )}
-            {!isLoading && partners?.length === 0 && (
+            {!isLoading && !partners && firestore && (
                 <TableRow>
                     <TableCell colSpan={4} className="h-24 text-center">
                         No partners found. Get started by adding one.
                     </TableCell>
                 </TableRow>
+            )}
+            {!isLoading && !firestore && (
+              <TableRow>
+                <TableCell colSpan={4} className="h-24 text-center">
+                  Connecting to the database...
+                </TableCell>
+              </TableRow>
             )}
             {partners?.map(partner => (
               <TableRow key={partner.id}>

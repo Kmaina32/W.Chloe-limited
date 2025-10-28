@@ -93,12 +93,19 @@ export default function AdminEventsPage() {
                 </TableCell>
               </TableRow>
             )}
-            {!isLoading && events?.length === 0 && (
+             {!isLoading && !events && firestore && (
                 <TableRow>
                     <TableCell colSpan={4} className="h-24 text-center">
                         No events found. Get started by adding one.
                     </TableCell>
                 </TableRow>
+            )}
+            {!isLoading && !firestore && (
+              <TableRow>
+                <TableCell colSpan={4} className="h-24 text-center">
+                  Connecting to the database...
+                </TableCell>
+              </TableRow>
             )}
             {events?.map(event => (
               <TableRow key={event.id}>

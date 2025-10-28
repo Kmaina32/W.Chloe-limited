@@ -67,12 +67,19 @@ export default function AdminUsersPage() {
                 </TableCell>
               </TableRow>
             )}
-            {!isLoading && users?.length === 0 && (
+            {!isLoading && !users && firestore && (
                 <TableRow>
                     <TableCell colSpan={3} className="h-24 text-center">
                         No users found.
                     </TableCell>
                 </TableRow>
+            )}
+            {!isLoading && !firestore && (
+              <TableRow>
+                <TableCell colSpan={3} className="h-24 text-center">
+                  Connecting to the database...
+                </TableCell>
+              </TableRow>
             )}
             {users?.map(user => (
               <TableRow key={user.id}>
